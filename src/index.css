@@ -249,4 +249,34 @@ pre code { font-family: var(--mono); font-size: 12.5px; line-height: 1.65; color
 .resmsg { color: var(--muted); font-size: 14px; margin: 14px auto 22px; max-width: 38ch; line-height: 1.5; }
 .resbtns { display: flex; gap: 10px; justify-content: center; }
 
+/* walkthrough ("Watch") player */
+.wt-now { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.wt-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); }
+.wt-lesson { font-family: var(--display); font-weight: 600; font-size: 16px; color: var(--amber2); letter-spacing: -.005em; }
+.wt-stage { min-height: 248px; display: flex; align-items: center; justify-content: center; overflow-x: auto;
+  border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(160deg, var(--surface), var(--bg2)); padding: 28px 22px; }
+.wt-stage .flow, .wt-stage .ex { margin: 0; width: 100%; }
+.wt-intro { text-align: center; max-width: 60ch; }
+.wt-intro-lbl { font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); display: block; margin-bottom: 12px; }
+.wt-intro-tldr { color: var(--text); font-size: 16px; line-height: 1.6; margin: 0; }
+.wt-caption { text-align: center; color: var(--muted); font-size: 14px; line-height: 1.5; margin: 16px auto 0; max-width: 58ch; min-height: 21px; }
+.wt-bar { height: 5px; border-radius: 99px; background: var(--surface2); border: 1px solid var(--line); overflow: hidden; margin: 18px 0 14px; }
+.wt-fill { height: 100%; background: linear-gradient(90deg, var(--amber), var(--amber2)); border-radius: 99px; transition: width .4s; }
+.wt-ctrl { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.wt-btn { width: 40px; height: 40px; border-radius: 11px; border: 1px solid var(--line2); background: var(--surface); color: var(--text);
+  cursor: pointer; display: grid; place-items: center; transition: all .2s; }
+.wt-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--amber2); transform: translateY(-1px); }
+.wt-btn:disabled { opacity: .32; cursor: default; }
+.wt-btn.main { width: 50px; height: 50px; border: none; background: linear-gradient(150deg, var(--amber), #b9791f); color: #1a1409; }
+.wt-btn.main:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.wt-count { font-family: var(--mono); font-size: 11px; color: var(--faint); margin-left: 6px; }
+/* scene reveal states */
+.wt-flow .flow-node, .wt-ex .ex-step { transition: opacity .35s, border-color .35s, transform .35s, box-shadow .35s; }
+.wt-flow .flow-node.dim { opacity: .3; }
+.wt-flow .flow-node.on { border-color: var(--amber); box-shadow: 0 0 0 1px rgba(233,169,60,.3); transform: translateY(-3px); }
+.flow-arrow.lit { color: var(--amber); }
+.wt-ex .ex-step.dim { opacity: .32; }
+.wt-ex .ex-step.on .ex-dot { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 0 3px rgba(233,169,60,.18); }
+.wt-ex .ex-step.on .ex-label { color: var(--amber2); }
+
 .footer { margin-top: 44px; text-align: center; font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--faint); }

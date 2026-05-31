@@ -4,6 +4,7 @@ import { ICONS } from "./icons.js";
 import Lesson from "./Lesson.jsx";
 import Flashcards from "./Flashcards.jsx";
 import Quiz from "./Quiz.jsx";
+import Walkthrough from "./Walkthrough.jsx";
 
 export default function ModuleView({ module, progress, onBack, onToggleLesson, onFinishQuiz }) {
   const [mode, setMode] = useState("lessons");
@@ -26,6 +27,7 @@ export default function ModuleView({ module, progress, onBack, onToggleLesson, o
       <div className="tabs">
         {[
           ["lessons", "Lessons"],
+          ["walk", "Watch"],
           ["cards", "Flashcards"],
           ["quiz", "Quiz"],
         ].map(([k, label]) => (
@@ -44,6 +46,8 @@ export default function ModuleView({ module, progress, onBack, onToggleLesson, o
             onToggle={() => onToggleLesson(l.id)}
           />
         ))}
+
+      {mode === "walk" && <Walkthrough key={module.id} module={module} />}
 
       {mode === "cards" && <Flashcards key={module.id} cards={module.flashcards} />}
 
