@@ -19,6 +19,7 @@ export const MODULES = [
       {
         id: "py-1",
         title: "Type hints & Pydantic: the contract layer",
+        daily: true,
         tldr: "LLM output is untrusted text. Pydantic turns it into validated, typed objects and doubles as the schema you hand the model. Master this first; everything downstream depends on it.",
         body: [
           { h: "Why types matter more in AI code" },
@@ -139,6 +140,7 @@ export const MODULES = [
       {
         id: "llm-3",
         title: "Prompt engineering that moves the needle",
+        daily: true,
         tldr: "Big wins: clear role + explicit instructions, examples (few-shot), strong structure (delimiters/XML), and asking for reasoning before the answer. Treat prompts as versioned code with tests.",
         body: [
           { h: "The high-leverage techniques" },
@@ -157,6 +159,7 @@ export const MODULES = [
       {
         id: "llm-4",
         title: "Structured output & function calling",
+        daily: true,
         tldr: "The bridge from text generator to software component. Constrain the model to JSON matching a schema, or expose functions it can call. Always validate the result with Pydantic before trusting it.",
         body: [
           { h: "Two related mechanisms" },
@@ -232,6 +235,7 @@ export const MODULES = [
       {
         id: "rag-3",
         title: "Building the RAG pipeline end to end",
+        daily: true,
         tldr: "Two phases. Offline: load → chunk → embed → store. Online: embed query → retrieve top-k → (rerank) → stuff into prompt → generate with citations. The retrieval step is usually where quality lives or dies.",
         body: [
           { h: "The pipeline" },
@@ -293,6 +297,7 @@ export const MODULES = [
       {
         id: "agents-1",
         title: "The agent loop & the ReAct pattern",
+        daily: true,
         tldr: "Every agent is a loop: reason → choose a tool → act → observe → repeat until done. ReAct interleaves reasoning with actions. The hard part isn't the loop; it's the stopping conditions and cost caps.",
         body: [
           { h: "The loop in plain code" },
@@ -307,6 +312,7 @@ export const MODULES = [
       {
         id: "agents-2",
         title: "Designing tools agents can actually use",
+        daily: true,
         tldr: "Tools are the agent's hands. Good tools are few, well-described, narrowly scoped, and return clean results plus useful errors. Most agent failures trace back to badly designed tools, not the model.",
         body: [
           { h: "Principles of good tools" },
@@ -351,6 +357,30 @@ export const MODULES = [
           { note: "Start with one agent and good tools. Introduce a second agent only when you can name the specific bottleneck it removes.", kind: "pro" },
         ],
       },
+      {
+        id: "agents-5",
+        title: "Text-to-SQL: the talk-to-your-data agent",
+        daily: true,
+        tldr: "Turn plain-English questions into SQL the agent runs, then explains. The single highest-leverage agent for anyone from a data/BI background, and a daily pattern in analytics-AI roles. Safety and schema grounding are the whole game.",
+        body: [
+          { h: "Why this is your unfair advantage" },
+          { p: "Most engineers can wire an LLM to a database. Few understand schemas, joins, grain, and the ways a query returns numbers that are wrong but plausible. **That instinct is exactly what makes a text-to-SQL agent trustworthy.** Coming from data/BI, this is the agent you can build better than almost anyone competing for the same role." },
+          { h: "The pattern: ground → generate → guard → run → explain" },
+          { steps: [
+            "**Ground** the model in the schema: table/column names, types, and a few sample rows. It cannot query tables it doesn't know exist.",
+            "**Generate** a single SELECT, constrained by that schema and your rules.",
+            "**Guard** it: SELECT-only, forced LIMIT, no DDL/DML, no multiple statements, validated before execution.",
+            "**Run** it on a read-only connection with a row cap and a query timeout.",
+            "**Explain** the result in plain English and show the SQL so a human can verify it.",
+          ] },
+          { code: "@tool\ndef query_analytics(sql: str) -> str:\n    \"\"\"Run ONE read-only SELECT against the analytics warehouse.\n    `sql` must be a single SELECT, no DDL/DML, and include a LIMIT.\"\"\"\n    q = sql.strip().rstrip(\";\")\n    low = q.lower()\n    if not low.startswith(\"select\"):\n        return \"Error: only a single SELECT is allowed.\"\n    if \";\" in q or any(k in low for k in (\"insert\", \"update\", \"delete\", \"drop\", \"alter\")):\n        return \"Error: writes, DDL, and multiple statements are forbidden.\"\n    if \"limit\" not in low:\n        q += \" LIMIT 200\"\n    try:\n        return format_rows(readonly_db.execute(q, timeout=10))  # read-only role + timeout\n    except Exception as e:\n        return f\"SQL error: {e}. Check exact table/column names against the schema.\"", lang: "python" },
+          { h: "Where these agents go wrong (and you won't)" },
+          { p: "The failure mode is rarely broken SQL; it is **confidently wrong** SQL: a fan-out join that double-counts revenue, a missing date filter, the wrong grain. Defend by giving the model each table's grain in one line, asking it to state its assumptions, and validating answers against a known total in your evals." },
+          { note: "Never give a text-to-SQL agent a read-write connection. Use a dedicated read-only role, a statement timeout, and a row cap. A generated DELETE or an unbounded cartesian join is otherwise a production incident.", kind: "pitfall" },
+          { note: "Schema grounding beats prompt cleverness. Inject the relevant table DDL plus a couple of sample rows; for big warehouses, retrieve only the tables relevant to the question instead of dumping all 400.", kind: "pro" },
+          { note: "This is the strongest portfolio piece for a data-to-AI pivot. Build it over a real dataset, add 15-20 question/expected-answer evals, and demo it in interviews. See the 'Land the Role' module.", kind: "tip" },
+        ],
+      },
     ],
     flashcards: [
       { front: "Describe the agent loop in five words.", back: "Reason, act, observe, repeat, stop. The model loops, calling tools until it decides it's done." },
@@ -361,6 +391,8 @@ export const MODULES = [
       { front: "Better than stuffing full history each turn?", back: "Keep recent turns verbatim, summarize older ones into a running summary, and retrieve only relevant long-term facts." },
       { front: "What is MCP?", back: "Model Context Protocol: an open standard for connecting agents to external tools/data via a uniform interface instead of bespoke integrations." },
       { front: "Reliability math for chained agents?", back: "It compounds: five 90%-reliable agents in a chain ≈ 59% overall. Add validation between handoffs; prefer fewer strong agents." },
+      { front: "Safe execution model for a text-to-SQL agent?", back: "Read-only DB role, SELECT-only validation, forced LIMIT, statement timeout, and show the SQL. Never a read-write connection." },
+      { front: "Biggest text-to-SQL failure mode?", back: "Confidently wrong SQL (fan-out joins double-counting, missing date filters, wrong grain), not syntax errors. Ground in schema + grain notes and eval against known totals." },
     ],
     quiz: [
       { q: "An agent gets stuck calling the same failing tool over and over. Best safeguard?", options: ["Bigger model", "Max-step cap + loop detection + cost ceiling", "Higher temperature", "More tools"], answer: 1, why: "Hard caps and loop detection stop infinite, billable loops; the loop is the danger, not the model." },
@@ -368,6 +400,7 @@ export const MODULES = [
       { q: "Best way to control context cost in a long conversation?", options: ["Resend everything each turn", "Summarize older turns + retrieve only relevant facts", "Use temperature 0", "Add more agents"], answer: 1, why: "Verbatim history every turn is costly and distracting; summarize and retrieve selectively." },
       { q: "When should you add a second agent?", options: ["Always, more is better", "When you can name the specific bottleneck it removes", "To increase token use", "Never"], answer: 1, why: "Multi-agent adds coordination cost and compounding failure; justify each agent with a concrete bottleneck." },
       { q: "What problem does MCP solve?", options: ["Faster inference", "A uniform standard to connect agents to tools/data instead of bespoke integrations", "Cheaper embeddings", "Bigger context windows"], answer: 1, why: "MCP standardizes how agents access external tools and data sources." },
+      { q: "Most dangerous mistake when building a text-to-SQL agent?", options: ["Using temperature 0", "Giving it a read-write DB connection", "Showing the SQL to the user", "Adding a LIMIT"], answer: 1, why: "A generated DELETE/UPDATE or unbounded join becomes a production incident. Use a read-only role, SELECT-only checks, timeouts, and row caps." },
     ],
   },
 
@@ -406,13 +439,14 @@ export const MODULES = [
       },
       {
         id: "fw-3",
-        title: "CrewAI — role-based multi-agent",
-        tldr: "Define a crew of role-playing agents (researcher, writer, reviewer), give them tasks, and it orchestrates collaboration. Fastest path from idea to a working multi-agent prototype.",
+        title: "OpenAI Agents SDK — lightweight & widely adopted",
+        tldr: "A small, unopinionated framework: agents, tools, handoffs between agents, and guardrails, with tracing built in. Provider-flexible despite the name. A common production default alongside LangGraph when you don't need a full graph engine.",
         body: [
           { h: "The shape" },
-          { code: "from crewai import Agent, Task, Crew\n\nresearcher = Agent(role=\"Researcher\", goal=\"Find facts\", tools=[search])\nwriter = Agent(role=\"Writer\", goal=\"Draft a brief\")\n\nt1 = Task(description=\"Research topic X\", agent=researcher)\nt2 = Task(description=\"Write a one-page brief\", agent=writer)\n\ncrew = Crew(agents=[researcher, writer], tasks=[t1, t2])\nresult = crew.kickoff()", lang: "python" },
-          { p: "CrewAI optimizes for the role-collaboration metaphor, which is intuitive and quick to prototype. Remember the compounding-reliability caveat from Module 4: more agents, more failure surface." },
-          { note: "Great for prototypes and clearly separable roles. For production reliability you'll still add validation between tasks and may graduate to a more controlled framework.", kind: "tip" },
+          { code: "from agents import Agent, Runner, function_tool\n\n@function_tool\ndef get_order_status(order_id: str) -> str:\n    \"\"\"Look up an order's status by ID.\"\"\"\n    return db.status(order_id)\n\nsupport = Agent(\n    name=\"Support\",\n    instructions=\"Answer order questions. Use tools; never guess a status.\",\n    tools=[get_order_status],\n)\nresult = Runner.run_sync(support, \"Where is order A-1190?\")\nprint(result.final_output)", lang: "python" },
+          { p: "The primitives are deliberately few: **agents** (instructions + tools), **handoffs** (one agent delegates to another), **guardrails** (validate input/output), and **sessions** for memory. Tracing is built in, which matters more in production than raw feature count." },
+          { note: "Despite the name it is not OpenAI-only; it works with many model providers. Reach for it when you want a thin, well-traced layer over the loop without LangGraph's graph ceremony.", kind: "pro" },
+          { note: "Handoffs are how it does multi-agent: a triage agent routes to specialists. Same compounding-reliability caveat from Module 4 applies, so validate at the boundaries.", kind: "tip" },
         ],
       },
       {
@@ -425,9 +459,10 @@ export const MODULES = [
           { h: "A decision guide" },
           { steps: [
             "**Learning / type-first single agent** → Pydantic AI.",
-            "**Complex, stateful, branching production flows** → LangGraph.",
-            "**Quick role-based multi-agent prototype** → CrewAI.",
-            "**Claude-native, MCP, hooks, subagents** → Claude Agent SDK.",
+            "**Lightweight, well-traced production agent** → OpenAI Agents SDK.",
+            "**Complex, stateful, branching flows with durable state** → LangGraph.",
+            "**Claude-native: MCP, hooks, skills, subagents** → Claude Agent SDK.",
+            "**Throwaway role-play prototype** → CrewAI (know the metaphor; rarely the production choice).",
           ] },
           { note: "The framework is a convenience over the agent loop, not a replacement for understanding it. Engineers who know the loop (Module 4) can read, debug, and switch any framework. Those who don't are stuck when the abstraction leaks.", kind: "pro" },
         ],
@@ -437,16 +472,16 @@ export const MODULES = [
       { front: "Pydantic AI's defining feature?", back: "Type-first: output_type returns a validated Pydantic object (not a string to parse); tools are plain typed functions." },
       { front: "LangGraph's core abstraction?", back: "A graph of nodes (steps) and edges (transitions) over a shared state object, with conditional edges for branching/looping." },
       { front: "What does LangGraph checkpointing give you?", back: "Durable, persisted state between steps: resumable agents and built-in memory." },
-      { front: "CrewAI's metaphor?", back: "A crew of role-based agents (researcher, writer, reviewer) with tasks; it orchestrates their collaboration. Fast to prototype." },
+      { front: "OpenAI Agents SDK in one line?", back: "A small framework — agents, tools, handoffs, guardrails — with built-in tracing; provider-flexible. A common lightweight production default." },
       { front: "What primitives does the Claude Agent SDK provide?", back: "Tool use, hooks, native MCP, skills, and subagents — the architecture behind Claude Code." },
-      { front: "How should you choose a framework?", back: "By use case: Pydantic AI (typed single agent), LangGraph (complex stateful flows), CrewAI (role multi-agent), Claude Agent SDK (Claude-native/MCP)." },
+      { front: "How should you choose a framework?", back: "By use case: Pydantic AI (typed single agent), OpenAI Agents SDK (lightweight + traced), LangGraph (complex stateful flows), Claude Agent SDK (Claude-native/MCP). CrewAI only for quick role-play prototypes." },
       { front: "Why learn the agent loop before frameworks?", back: "Frameworks are conveniences over the loop. Knowing the loop lets you debug, read, and switch any framework when abstractions leak." },
     ],
     quiz: [
       { q: "You want a single agent that returns a validated, typed object and you already know Pydantic. Pick:", options: ["CrewAI", "Pydantic AI", "A raw bash script", "Nothing"], answer: 1, why: "Pydantic AI is type-first; output_type yields a validated object and tools are typed functions." },
       { q: "Your agent needs branching, loops, human-approval pauses, and durable state. Best fit?", options: ["A simple while loop with no state", "LangGraph", "CrewAI roles only", "Pydantic AI"], answer: 1, why: "LangGraph models explicit stateful graphs with conditional edges and checkpointing." },
       { q: "What does LangGraph's conditional edge control?", options: ["Embeddings", "Which node runs next based on state", "Token count", "Cost"], answer: 1, why: "Conditional edges express branching/looping logic over the shared state." },
-      { q: "Biggest risk when reaching for CrewAI multi-agent in production?", options: ["It's too typed", "Compounding unreliability across agents", "It can't call tools", "No Python support"], answer: 1, why: "Chained agents multiply failure; add validation between tasks and justify each agent." },
+      { q: "You want a thin, well-traced framework with agents, tools, and handoffs — not a full graph engine. Pick:", options: ["CrewAI", "OpenAI Agents SDK", "A raw while loop with no tracing", "Pydantic alone"], answer: 1, why: "The OpenAI Agents SDK is a lightweight, provider-flexible layer with built-in tracing and handoffs." },
       { q: "Why understand the agent loop even when using a framework?", options: ["You don't need to", "So you can debug and switch frameworks when abstractions leak", "Frameworks replace the loop entirely", "To avoid Python"], answer: 1, why: "Frameworks are conveniences over the loop; understanding it keeps you unstuck." },
     ],
   },
@@ -464,6 +499,7 @@ export const MODULES = [
       {
         id: "ev-1",
         title: "Evals: proving the agent works",
+        daily: true,
         tldr: "Evals are test cases for non-deterministic systems. Mix exact assertions (for structured output) with LLM-as-judge (for open-ended quality). Run them on every change. This alone puts you ahead of most builders.",
         body: [
           { h: "Why vibes fail" },
@@ -481,6 +517,7 @@ export const MODULES = [
       {
         id: "ev-2",
         title: "Observability & tracing",
+        daily: true,
         tldr: "When an agent misbehaves, you need to see every step: prompts, tool calls, args, outputs, tokens, latency. Tracing turns 'it broke' into 'it broke at step 3 because the tool returned an empty list.'",
         body: [
           { h: "What to capture per step" },
@@ -552,6 +589,109 @@ export const MODULES = [
       { q: "Your multi-step agent fails intermittently. First thing to add?", options: ["A bigger model", "Step-level tracing of prompts, tool calls, and outputs", "Higher temperature", "More tools"], answer: 1, why: "Traces reveal which step and input caused the failure; the bug is usually intermediate." },
       { q: "An agent reads web pages and can send emails. The real risk is:", options: ["Slow responses", "Prompt injection driving the email tool", "High token count", "Too few tools"], answer: 1, why: "Untrusted content can carry instructions; never pair untrusted input with powerful tools without checks." },
       { q: "Cheapest reliable way to cut cost on easy steps?", options: ["Always use the biggest model", "Route simple steps to a smaller model", "Disable evals", "Increase max_tokens"], answer: 1, why: "Model routing reserves the expensive model for steps that need it." },
+    ],
+  },
+
+  // ==========================================================================
+  // 7. LAND THE ROLE
+  // ==========================================================================
+  {
+    id: "job",
+    name: "Land the Role",
+    tag: "getting hired",
+    icon: "Rocket",
+    blurb: "The part that actually gets you the job: portfolio projects worth showing, interview answers that sound senior, and the agentic-coding tools you'll use every day.",
+    lessons: [
+      {
+        id: "job-1",
+        title: "Portfolio projects that actually get you hired",
+        tldr: "Two or three deep, working agents beat ten tutorials. Pick projects where your data background shows, make them runnable by a stranger, and write an honest limitations section. Shipping beats collecting certificates.",
+        body: [
+          { h: "What hiring managers actually look for" },
+          { p: "Not 'I finished a course.' They look for evidence you can ship a working agent and reason about why it fails. A repo a stranger can clone and run, with a clear problem statement and a short demo, outperforms any certificate." },
+          { h: "Three projects that play to a data background" },
+          { steps: [
+            "**Talk-to-your-database agent** — plain English in, validated read-only SQL out, results explained. Your home turf; see the text-to-SQL lesson in the Agents module.",
+            "**Document-intelligence RAG** — answer questions over a real document set with citations AND a retrieval eval (recall@k), not just a demo that works once.",
+            "**Automated insights agent** — watches a dataset and writes a daily 'what changed and why it matters' summary. Shows agency plus your analytics instinct.",
+          ] },
+          { h: "What makes a project count" },
+          { steps: [
+            "**Runnable by a stranger**: clean README, setup steps, sample data or a seed script.",
+            "**A real eval suite** (even 20-30 cases). This one thing puts you ahead of most candidates.",
+            "**Error handling and an honest 'Limitations' section** — naming what breaks signals senior thinking.",
+            "**A 60-90s demo** (GIF or screen recording) at the top of the README, so it lands in 10 seconds.",
+          ] },
+          { note: "Don't ship five shallow demos. One project with evals, traces, and a limitations section proves more than a wall of half-finished repos. Depth reads as competence.", kind: "pro" },
+          { note: "Build over a dataset you actually understand. Domain context is your edge, and it makes your 'limitations' and 'what I'd do next' answers credible in interviews.", kind: "tip" },
+        ],
+      },
+      {
+        id: "job-2",
+        title: "The AI-engineer interview: what they ask & how to answer",
+        tldr: "Expect three buckets: fundamentals (tokens, RAG, tool use), system design ('design an agent that…'), and project deep-dives. Answer with tradeoffs and failure modes, not buzzwords. 'It depends, here's the tradeoff' is the senior signal.",
+        body: [
+          { h: "The three question buckets" },
+          { steps: [
+            "**Fundamentals**: 'What's in the context window?', 'RAG vs fine-tuning vs a longer prompt?', 'In function calling, who executes the tool?'",
+            "**System design**: 'Design an agent that answers questions over our docs / books a meeting / triages tickets.' They want your reasoning, not a perfect answer.",
+            "**Project deep-dive**: 'Walk me through something you built. What broke? What would you change?'",
+          ] },
+          { h: "How to answer a system-design prompt" },
+          { steps: [
+            "**Clarify scope and success criteria first**: what does 'good' mean, and how will we measure it?",
+            "**Sketch the loop and the tools**: reason → tool → observe → stop; name the tools and their guardrails.",
+            "**Name the failure modes and your defenses**: hallucination → grounding + 'say I don't know'; runaway loop → step/cost caps; prompt injection → treat input as data, restrict tools.",
+            "**Say how you'd evaluate and observe it**: evals plus tracing. Raising this unprompted is a strong signal.",
+          ] },
+          { h: "High-frequency answers worth knowing cold" },
+          { steps: [
+            "**RAG vs fine-tuning**: RAG for fresh/changing/private facts and citations; fine-tuning for fixed style/format or a narrow high-volume task. Default to RAG + good prompting first.",
+            "**Who runs the tool?** Your code. The model only emits a structured request.",
+            "**Why temperature 0 for agents?** Decisions and tool args need consistency; save randomness for content.",
+            "**How do you know it works?** Evals (assertions + LLM-as-judge) on every change, plus production traces.",
+          ] },
+          { note: "Fastest way to sound senior: lead with the tradeoff and the failure mode. Juniors recite features ('I'd use LangChain'); seniors say 'here's what I'd optimize for, here's what would break, here's how I'd measure it.'", kind: "pro" },
+          { note: "Tie every answer back to your projects: 'I hit exactly this — my RAG bot returned ungrounded answers until I added recall@k evals and found retrieval was the real problem.' Concrete beats theoretical.", kind: "tip" },
+        ],
+      },
+      {
+        id: "job-3",
+        title: "Agentic coding: Claude Code, Cursor & your daily workflow",
+        daily: true,
+        tldr: "Modern AI engineers build with agentic coding tools every day. Driving Claude Code / Cursor well — and knowing how they work under the hood — is now table stakes and a visible interview signal. They're also the clearest live example of the agent loop you've been learning.",
+        body: [
+          { h: "Why this is a daily-driver skill, not a gimmick" },
+          { p: "Tools like **Claude Code** (terminal/IDE) and **Cursor** (editor) are how a large share of professional AI work now happens: you state intent, the agent reads the codebase, edits files, runs commands, and iterates. Teams expect fluency, and the tools are themselves textbook agents — the loop, tools, and context management from earlier modules made concrete." },
+          { h: "How to actually be good with them" },
+          { steps: [
+            "**Give context, not just commands.** Point at the files, paste the error, state the constraint. Garbage-in still applies.",
+            "**Work in small, verifiable steps.** Ask for one change, run it, confirm, then continue — the same discipline as a bounded agent loop.",
+            "**Keep it grounded.** Make it read the real code before editing and run the tests/build to verify, instead of trusting its claim.",
+            "**Use a project memory file** (an instructions / `CLAUDE.md` file) so conventions and commands persist across sessions.",
+          ] },
+          { h: "The connection to everything you've learned" },
+          { p: "These tools are a live, inspectable agent: a reasoning loop, a tool set (read/edit files, run shell, search), context and memory management, and guardrails (permission prompts before risky actions). Being able to say 'Claude Code is an agent loop with file and shell tools behind a permission guardrail' shows you understand agents, not just brand names." },
+          { note: "Don't blind-accept generated diffs. The same rule as production agents: verify outputs, run the tests, and keep a human in the loop before anything irreversible. Review what it changed.", kind: "pitfall" },
+          { note: "Use them to build your portfolio faster, then be ready to explain every line. Interviews increasingly ask you to modify your own code live — fluency with the tool and ownership of the code both matter.", kind: "pro" },
+        ],
+      },
+    ],
+    flashcards: [
+      { front: "What beats ten tutorials on a resume?", back: "Two or three deep, working agents a stranger can clone and run — with evals, error handling, and an honest limitations section." },
+      { front: "Strongest portfolio project for a data/BI background?", back: "A talk-to-your-database (text-to-SQL) agent: plain English in, validated read-only SQL out, results explained. Your home turf." },
+      { front: "The three AI-engineer interview buckets?", back: "Fundamentals (tokens/RAG/tool use), system design ('design an agent that…'), and project deep-dives (what broke, what you'd change)." },
+      { front: "Fastest way to sound senior in an interview?", back: "Lead with tradeoffs and failure modes, not feature names. 'Here's what I'd optimize for, what would break, and how I'd measure it.'" },
+      { front: "RAG vs fine-tuning, one line?", back: "RAG for fresh/private/changing facts + citations; fine-tuning for fixed style/format or a narrow high-volume task. Default to RAG + good prompting first." },
+      { front: "Why are Claude Code / Cursor a daily skill?", back: "Most professional AI coding now runs through agentic tools and teams expect fluency. They're also a live example of the agent loop + tools + guardrails." },
+      { front: "How do you get the most out of an agentic coding tool?", back: "Give real context, work in small verifiable steps, make it read code and run tests, use a project memory file — and never blind-accept diffs." },
+    ],
+    quiz: [
+      { q: "Limited time before applying. Best use of it?", options: ["Collect five more course certificates", "Ship one deep project with evals + a demo + limitations", "Build ten tiny demos", "Memorize framework APIs"], answer: 1, why: "Depth with evals and an honest limitations section signals competence; shallow breadth does not." },
+      { q: "An interviewer says 'design an agent that answers questions over our docs.' Strong first move?", options: ["Name a framework immediately", "Clarify scope and how success is measured", "Start writing code", "List every tool you know"], answer: 1, why: "Clarifying scope and success criteria before designing is the senior signal; the loop and tradeoffs come next." },
+      { q: "When is fine-tuning the better call than RAG?", options: ["For fresh, changing facts", "For fixed style/format or a narrow high-volume task", "Whenever the prompt is long", "Never"], answer: 1, why: "RAG handles fresh/private facts with citations; fine-tuning fixes style/format or specializes a narrow task at scale." },
+      { q: "Why does fluency with Claude Code / Cursor matter in interviews?", options: ["It doesn't", "It's a daily-use skill and a concrete example of the agent loop + guardrails", "It replaces knowing Python", "It removes the need for evals"], answer: 1, why: "Agentic coding is daily practice now and demonstrates you understand agents in the real tools." },
+      { q: "Best practice when using an agentic coding tool on real code?", options: ["Blind-accept all diffs to move fast", "Work in small steps, make it run tests, review changes", "Never run the code", "Avoid giving it context"], answer: 1, why: "Same discipline as production agents: verify outputs and keep a human in the loop before irreversible changes." },
     ],
   },
 ];

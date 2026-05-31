@@ -1,6 +1,6 @@
 # Agent Engineering Console
 
-An interactive, expert-depth knowledge system for going from a data/SQL/BI background to building production AI agents. Six modules, each with detailed lessons (code, pitfalls, production notes), flashcards, and a quiz. Progress saves locally on your device.
+An interactive, expert-depth knowledge system for going from a data/SQL/BI background to building production AI agents. Seven modules, each with detailed lessons (code, pitfalls, production notes), flashcards, and a quiz. Lessons you'll use every single day are marked with a **daily driver** badge. Progress saves locally on your device.
 
 Built with React + Vite. Deploys as a static site (free on Vercel).
 
@@ -9,9 +9,10 @@ Built with React + Vite. Deploys as a static site (free on Vercel).
 - **Python for AI Engineers** — types/Pydantic, async, resilient I/O, key patterns
 - **LLM Fundamentals** — tokens & context, sampling, prompting, structured output
 - **Retrieval & RAG** — embeddings, chunking, pipelines, hybrid search, eval
-- **Agents** — the agent loop, tool design, memory, multi-agent, MCP
-- **Frameworks** — Pydantic AI, LangGraph, CrewAI, Claude Agent SDK, how to choose
+- **Agents** — the agent loop, tool design, memory, multi-agent, MCP, text-to-SQL
+- **Frameworks** — Pydantic AI, OpenAI Agents SDK, LangGraph, Claude Agent SDK, how to choose
 - **Evaluation & Production** — evals, observability, guardrails, cost & latency
+- **Land the Role** — portfolio projects, the AI-engineer interview, agentic coding (Claude Code / Cursor)
 
 Each lesson leads with a **tl;dr** so you can scan fast and expand only what you need.
 
@@ -81,6 +82,8 @@ All learning content lives in one file: **`src/data/curriculum.js`**. To add a l
 - `{ code: "...", lang: "python" }`
 - `{ steps: ["item one", "item two"] }`
 - `{ note: "...", kind: "pitfall" | "pro" | "tip" }`
+
+Add `daily: true` to a lesson object (alongside `title`/`tldr`) to give it the **daily driver** badge for skills used every single day.
 
 You can hand this file to Claude Code with a prompt like "add a 4th lesson to the Agents module on planning and reflection patterns, matching the existing format" and it will extend it for you.
 

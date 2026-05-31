@@ -63,7 +63,10 @@ export default function Lesson({ lesson, done, onToggle }) {
           <Check size={15} />
         </button>
         <div className="lmeta">
-          <h3 className="ltitle">{lesson.title}</h3>
+          <h3 className="ltitle">
+            {lesson.title}
+            {lesson.daily && <span className="dailyflag">daily driver</span>}
+          </h3>
           <div className="ltldr">
             <b>tl;dr</b>
             {lesson.tldr}
