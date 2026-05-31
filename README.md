@@ -14,7 +14,7 @@ Built with React + Vite. Deploys as a static site (free on Vercel).
 - **Evaluation & Production** — evals, observability, guardrails, cost & latency
 - **Land the Role** — portfolio projects, the AI-engineer interview, agentic coding (Claude Code / Cursor)
 
-Each lesson leads with a **tl;dr** so you can scan fast and expand only what you need. Every module also has a **Watch** tab — an animated walkthrough that plays through each topic's diagrams and worked examples step-by-step, like a narrated explainer (captions, no audio).
+Each lesson leads with a **tl;dr** so you can scan fast and expand only what you need. Every module also has a **Watch** tab — an animated walkthrough that plays through each topic's diagrams and worked examples step-by-step, like a narrated explainer (captions, no audio) — and an **Interview** tab with mixed drills: multiple-choice for fast recall plus open "spoken answer" questions, each with a model answer (headline → points to hit → a polished line to say).
 
 ## Run locally
 

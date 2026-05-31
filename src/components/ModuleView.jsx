@@ -5,6 +5,7 @@ import Lesson from "./Lesson.jsx";
 import Flashcards from "./Flashcards.jsx";
 import Quiz from "./Quiz.jsx";
 import Walkthrough from "./Walkthrough.jsx";
+import Interview from "./Interview.jsx";
 
 export default function ModuleView({ module, progress, onBack, onToggleLesson, onFinishQuiz }) {
   const [mode, setMode] = useState("lessons");
@@ -28,7 +29,8 @@ export default function ModuleView({ module, progress, onBack, onToggleLesson, o
         {[
           ["lessons", "Lessons"],
           ["walk", "Watch"],
-          ["cards", "Flashcards"],
+          ["interview", "Interview"],
+          ["cards", "Cards"],
           ["quiz", "Quiz"],
         ].map(([k, label]) => (
           <button key={k} className={"tab" + (mode === k ? " on" : "")} onClick={() => setMode(k)}>
@@ -48,6 +50,8 @@ export default function ModuleView({ module, progress, onBack, onToggleLesson, o
         ))}
 
       {mode === "walk" && <Walkthrough key={module.id} module={module} />}
+
+      {mode === "interview" && <Interview key={module.id} items={module.interview} />}
 
       {mode === "cards" && <Flashcards key={module.id} cards={module.flashcards} />}
 
