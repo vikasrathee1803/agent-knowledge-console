@@ -65,13 +65,24 @@ body {
 .barwrap { height: 7px; border-radius: 99px; background: var(--surface2); overflow: hidden; border: 1px solid var(--line); }
 .barfill { height: 100%; background: linear-gradient(90deg, #b9791f, var(--amber), var(--amber2)); border-radius: 99px; transition: width .5s cubic-bezier(.22,1,.36,1); }
 .progrow { display: flex; align-items: center; gap: 10px; margin: 22px 0 8px; }
-.mixcta { width: 100%; cursor: pointer; display: flex; align-items: center; gap: 10px; margin: 14px 0 2px;
+.ctarow { display: flex; gap: 10px; margin: 14px 0 2px; }
+@media (max-width: 560px) { .ctarow { flex-direction: column; } }
+.mixcta { flex: 1; min-width: 0; cursor: pointer; display: flex; align-items: center; gap: 10px;
   border: 1px solid var(--line2); background: linear-gradient(160deg, var(--surface), var(--bg2)); color: var(--text);
   border-radius: 14px; padding: 15px 18px; font-family: var(--mono); font-size: 12.5px; letter-spacing: .02em; transition: all .25s; text-align: left; }
 .mixcta:hover { border-color: var(--amber); color: var(--amber2); transform: translateY(-2px); box-shadow: 0 14px 32px -22px rgba(233,169,60,.6); }
 .mixcta svg { color: var(--amber); flex-shrink: 0; }
 .mixcta .mixarrow { margin-left: auto; transition: transform .25s; }
 .mixcta:hover .mixarrow { transform: translateX(3px); }
+.weakcta { flex: 0 0 auto; }
+.weakbadge { font-family: var(--mono); font-size: 10px; color: #1a1409; background: var(--red); border-radius: 99px; padding: 1px 7px; font-weight: 600; }
+.ws-clear { width: 100%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; margin-top: 10px;
+  border: none; background: none; color: var(--faint); font-family: var(--mono); font-size: 11px; letter-spacing: .06em; transition: color .2s; }
+.ws-clear:hover { color: var(--red); }
+.ws-done { text-align: center; padding: 40px 20px; border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(160deg, var(--surface), var(--bg2)); }
+.ws-done svg { color: var(--green); margin-bottom: 14px; }
+.ws-done-h { font-family: var(--display); font-weight: 600; font-size: 22px; color: var(--text); margin-bottom: 10px; }
+.ws-done p { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 46ch; margin: 0 auto; }
 .progrow .barwrap { flex: 1; }
 .progrow .n { font-family: var(--mono); font-size: 11px; color: var(--faint); white-space: nowrap; }
 

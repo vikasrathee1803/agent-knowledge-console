@@ -5,12 +5,14 @@ import { loadProgress, saveProgress, resetProgress } from "./lib/storage.js";
 import Home from "./components/Home.jsx";
 import ModuleView from "./components/ModuleView.jsx";
 import MixedDrill from "./components/MixedDrill.jsx";
+import WeakSpots from "./components/WeakSpots.jsx";
 
 export default function App() {
   const [progress, setProgress] = useState({ done: {}, quiz: {}, cards: {} });
   const [loaded, setLoaded] = useState(false);
   const [activeId, setActiveId] = useState(null);
   const [mixed, setMixed] = useState(false);
+  const [weakView, setWeakView] = useState(false);
 
   useEffect(() => {
     setProgress(loadProgress());
@@ -63,7 +65,9 @@ export default function App() {
           </div>
         </div>
 
-        {mixed ? (
+        {weakView ? (
+          <WeakSpots onBack={() => setWeakView(false)} />
+        ) : mixed ? (
           <MixedDrill onBack={() => setMixed(false)} />
         ) : !active ? (
           <Home
@@ -72,6 +76,7 @@ export default function App() {
             progress={progress}
             onOpen={setActiveId}
             onMixed={() => setMixed(true)}
+            onWeak={() => setWeakView(true)}
           />
         ) : (
           <ModuleView

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Check, X, Eye, Quote } from "lucide-react";
 import { Flow, Compare } from "./Diagrams.jsx";
+import { recordAnswer } from "../lib/storage.js";
 
 // Interview drills. Two item shapes:
 //   { type: "mcq",  q, options: [...], answer: idx, why }
@@ -39,7 +40,15 @@ export function McqCard({ item, n }) {
           const isAns = idx === item.answer;
           const cls = !done ? "" : isAns ? " correct" : idx === picked ? " wrong" : "";
           return (
-            <button key={idx} className={"opt" + cls} disabled={done} onClick={() => setPicked(idx)}>
+            <button
+              key={idx}
+              className={"opt" + cls}
+              disabled={done}
+              onClick={() => {
+                setPicked(idx);
+                recordAnswer(item.q, idx === item.answer);
+              }}
+            >
               <span className="key">
                 {done && isAns ? <Check size={13} /> : done && idx === picked ? <X size={13} /> : KEY[idx]}
               </span>

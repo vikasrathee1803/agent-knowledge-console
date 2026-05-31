@@ -13,6 +13,10 @@ Built with React + Vite. Deploys as a static site (free on Vercel).
 - **Frameworks** — Pydantic AI, OpenAI Agents SDK, LangGraph, Claude Agent SDK, how to choose
 - **Evaluation & Production** — evals, observability, guardrails, cost & latency
 - **Land the Role** — portfolio projects, the AI-engineer interview, agentic coding (Claude Code / Cursor)
+- **RAG — Deep Dive** — advanced chunking/parsing, query transformation (HyDE, multi-query), ANN & fusion, rigorous evaluation, production retrieval
+- **Agents — Deep Dive** — planning & reflection, robust tool use & recovery, context engineering, multi-agent orchestration, trajectory evaluation
+
+The home screen also has a **Mixed interview drill** (random questions across every module) and a **Weak spots** tracker that remembers the multiple-choice questions you've missed and lets you re-drill them until they clear.
 
 Each lesson leads with a **tl;dr** so you can scan fast and expand only what you need. Every module also has a **Watch** tab — an animated walkthrough that plays through each topic's diagrams and worked examples step-by-step, like a narrated explainer (captions, no audio) — and an **Interview** tab with 68 drills: multiple-choice for fast recall plus open "spoken answer" questions, each with a model answer (headline → points to hit → a polished line to say) and a **difficulty tag** (fundamental / intermediate / senior) you can filter by. The home screen also has a **Mixed interview drill** — randomized questions pulled from every module, one at a time, for dress-rehearsal practice.
 

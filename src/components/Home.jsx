@@ -1,7 +1,9 @@
-import { ArrowRight, Trophy, Shuffle } from "lucide-react";
+import { ArrowRight, Trophy, Shuffle, Target } from "lucide-react";
 import { ICONS } from "./icons.js";
+import { loadWeak } from "../lib/storage.js";
 
-export default function Home({ modules, totalLessons, progress, onOpen, onMixed }) {
+export default function Home({ modules, totalLessons, progress, onOpen, onMixed, onWeak }) {
+  const weakCount = Object.keys(loadWeak()).length;
   const doneCount = Object.values(progress.done).filter(Boolean).length;
   const overall = Math.round((doneCount / totalLessons) * 100);
 
@@ -27,11 +29,19 @@ export default function Home({ modules, totalLessons, progress, onOpen, onMixed 
         <div className="barwrap"><div className="barfill" style={{ width: `${overall}%` }} /></div>
       </div>
 
-      <button className="mixcta" onClick={onMixed}>
-        <Shuffle size={16} />
-        Mixed interview drill — random questions from every module
-        <ArrowRight size={16} className="mixarrow" />
-      </button>
+      <div className="ctarow">
+        <button className="mixcta" onClick={onMixed}>
+          <Shuffle size={16} />
+          Mixed interview drill — random questions from every module
+          <ArrowRight size={16} className="mixarrow" />
+        </button>
+        <button className="mixcta weakcta" onClick={onWeak}>
+          <Target size={16} />
+          Weak spots
+          {weakCount > 0 && <span className="weakbadge">{weakCount}</span>}
+          <ArrowRight size={16} className="mixarrow" />
+        </button>
+      </div>
 
       <div className="grid">
         {modules.map((m, idx) => {

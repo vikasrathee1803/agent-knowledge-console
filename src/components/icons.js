@@ -1,3 +1,3 @@
-import { BookOpen, Cpu, Search, Brain, Boxes, ShieldCheck, Rocket } from "lucide-react";
+import { BookOpen, Cpu, Search, Brain, Boxes, ShieldCheck, Rocket, Telescope, Network } from "lucide-react";
 
-export const ICONS = { BookOpen, Cpu, Search, Brain, Boxes, ShieldCheck, Rocket };
+export const ICONS = { BookOpen, Cpu, Search, Brain, Boxes, ShieldCheck, Rocket, Telescope, Network };
