@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
+import { Flow, Compare, Budget } from "./Diagrams.jsx";
 
 // --- inline markup: **bold** and `code` -> React nodes ----------------------
 function inline(text) {
@@ -44,6 +45,9 @@ function Section({ s }) {
         {inline(s.note)}
       </div>
     );
+  if (s.flow) return <Flow data={s.flow} />;
+  if (s.compare) return <Compare data={s.compare} />;
+  if (s.budget) return <Budget data={s.budget} />;
   return null;
 }
 

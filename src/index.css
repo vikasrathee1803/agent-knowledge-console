@@ -133,6 +133,47 @@ body {
 .lbody li { position: relative; color: var(--text); font-size: 14px; line-height: 1.6; padding-left: 20px; margin-bottom: 8px; }
 .lbody li::before { content: ""; position: absolute; left: 4px; top: 9px; width: 5px; height: 5px; border-radius: 99px; background: var(--amber); }
 
+/* diagrams: flow / compare / budget */
+.flow { display: flex; gap: 7px; margin: 6px 0 18px; }
+.flow-row { flex-flow: row wrap; align-items: stretch; }
+.flow-col { flex-direction: column; align-items: stretch; }
+.flow-node { flex: 1 1 128px; min-width: 0; display: flex; flex-direction: column; gap: 3px;
+  background: linear-gradient(160deg, var(--surface2), var(--bg2)); border: 1px solid var(--line2);
+  border-radius: 11px; padding: 10px 13px; }
+.flow-col .flow-node { flex: 0 0 auto; }
+.flow-node.hot { border-color: var(--amber); background: rgba(233,169,60,.09); box-shadow: 0 0 0 1px rgba(233,169,60,.15); }
+.flow-t { font-family: var(--mono); font-size: 12px; letter-spacing: .01em; color: var(--amber2); }
+.flow-node.hot .flow-t { color: var(--amber); }
+.flow-d { font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+.flow-arrow { flex: 0 0 auto; display: grid; place-items: center; color: var(--faint); align-self: center; }
+.flow-col .flow-arrow { transform: rotate(90deg); }
+.flow-loop { flex-basis: 100%; display: inline-flex; align-items: center; gap: 6px; margin-top: 2px;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--amber); }
+
+.cmpwrap { margin: 6px 0 18px; }
+.cmp { display: grid; gap: 10px; }
+@media (max-width: 520px) { .cmp { grid-template-columns: 1fr !important; } }
+.cmp-col { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding-bottom: 11px; overflow: hidden; }
+.cmp-h { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding: 9px 13px; margin-bottom: 9px; }
+.cmp-list { margin: 0; padding: 0 13px; list-style: none; }
+.cmp-list li { position: relative; font-size: 13px; color: var(--text); line-height: 1.45; padding-left: 16px; margin-bottom: 7px; }
+.cmp-list li::before { content: ""; position: absolute; left: 2px; top: 8px; width: 5px; height: 5px; border-radius: 99px; }
+.cmp-cap { font-size: 12.5px; color: var(--muted); margin-top: 9px; line-height: 1.5; }
+.cmp-green .cmp-h { color: var(--green); background: rgba(165,207,123,.1); } .cmp-green .cmp-list li::before { background: var(--green); }
+.cmp-blue  .cmp-h { color: var(--blue);  background: rgba(132,182,214,.1); } .cmp-blue  .cmp-list li::before { background: var(--blue); }
+.cmp-amber .cmp-h { color: var(--amber2);background: rgba(233,169,60,.1); } .cmp-amber .cmp-list li::before { background: var(--amber); }
+.cmp-red   .cmp-h { color: var(--red);   background: rgba(224,137,106,.1); } .cmp-red   .cmp-list li::before { background: var(--red); }
+
+.budget { margin: 6px 0 18px; }
+.budget-cap { font-family: var(--mono); font-size: 11px; color: var(--faint); letter-spacing: .04em; margin-bottom: 8px; }
+.budget-bar { display: flex; height: 26px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.budget-seg { height: 100%; transition: width .5s; }
+.budget-seg.reserved { background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(0,0,0,.28) 4px, rgba(0,0,0,.28) 8px) !important; }
+.budget-legend { display: flex; flex-wrap: wrap; gap: 7px 14px; margin-top: 10px; }
+.budget-key { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.budget-key i { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.budget-key b { color: var(--text); font-weight: 500; }
+
 pre { background: #100d08; border: 1px solid var(--line); border-radius: 11px; padding: 15px 16px; overflow-x: auto; margin: 0 0 14px; }
 pre code { font-family: var(--mono); font-size: 12.5px; line-height: 1.65; color: #e7dcc2; white-space: pre; }
 .codelang { font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); display: block; margin-bottom: 8px; }
