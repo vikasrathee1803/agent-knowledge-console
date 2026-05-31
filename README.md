@@ -85,6 +85,7 @@ All learning content lives in one file: **`src/data/curriculum.js`**. To add a l
 - `{ flow: { dir?: "row"|"col", loop?: "label", steps: [{ t, d?, hot? }] } }` — boxes-and-arrows diagram (pipelines, the agent loop, round-trips)
 - `{ compare: { caption?, cols: [{ title, accent?: "amber"|"green"|"blue"|"red", items: [...] }] } }` — side-by-side comparison cards
 - `{ budget: { total: "caption", parts: [{ label, v, reserved? }] } }` — proportional stacked bar (e.g. the token budget)
+- `{ example: { title?, steps: [{ t, io, hot? }] } }` — worked-example timeline showing the real data at each step
 
 Add `daily: true` to a lesson object (alongside `title`/`tldr`) to give it the **daily driver** badge for skills used every single day.
 

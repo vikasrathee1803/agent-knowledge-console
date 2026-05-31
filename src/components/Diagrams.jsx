@@ -53,6 +53,27 @@ export function Compare({ data }) {
   );
 }
 
+// Worked example: a vertical data-timeline showing how the payload changes per step.
+//   { example: { title?: "...", steps: [{ t, io, hot? }] } }
+export function Example({ data }) {
+  return (
+    <div className="ex">
+      {data.title && <div className="ex-title">{data.title}</div>}
+      <div className="ex-steps">
+        {data.steps.map((s, i) => (
+          <div className={"ex-step" + (s.hot ? " hot" : "")} key={i}>
+            <span className="ex-dot" aria-hidden="true" />
+            <div className="ex-label">{s.t}</div>
+            <pre className="ex-io">
+              <code>{s.io}</code>
+            </pre>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const SEG = ["#b9791f", "#e9a93c", "#f3c879", "#cdb27a", "#a5cf7b", "#84b6d6"];
 const RESERVED = "#5a4e34";
 

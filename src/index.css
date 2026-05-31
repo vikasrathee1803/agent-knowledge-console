@@ -164,6 +164,19 @@ body {
 .cmp-amber .cmp-h { color: var(--amber2);background: rgba(233,169,60,.1); } .cmp-amber .cmp-list li::before { background: var(--amber); }
 .cmp-red   .cmp-h { color: var(--red);   background: rgba(224,137,106,.1); } .cmp-red   .cmp-list li::before { background: var(--red); }
 
+/* worked example: data timeline */
+.ex { margin: 6px 0 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 15px 16px 4px; }
+.ex-title { font-family: var(--mono); font-size: 11.5px; letter-spacing: .03em; color: var(--amber2); margin-bottom: 15px; }
+.ex-steps { position: relative; padding-left: 19px; }
+.ex-steps::before { content: ""; position: absolute; left: 4px; top: 5px; bottom: 16px; width: 1.5px; background: var(--line2); }
+.ex-step { position: relative; margin-bottom: 14px; }
+.ex-dot { position: absolute; left: -19px; top: 3px; width: 9px; height: 9px; border-radius: 99px; background: var(--surface2); border: 2px solid var(--line2); }
+.ex-step.hot .ex-dot { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 0 3px rgba(233,169,60,.18); }
+.ex-label { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; color: var(--muted); margin-bottom: 5px; }
+.ex-step.hot .ex-label { color: var(--amber); }
+.ex-io { margin: 0; padding: 9px 12px; border-radius: 8px; }
+.ex-io code { font-size: 12px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; color: #e7dcc2; }
+
 .budget { margin: 6px 0 18px; }
 .budget-cap { font-family: var(--mono); font-size: 11px; color: var(--faint); letter-spacing: .04em; margin-bottom: 8px; }
 .budget-bar { display: flex; height: 26px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
