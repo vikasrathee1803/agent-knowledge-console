@@ -1,7 +1,7 @@
-import { ArrowRight, Trophy } from "lucide-react";
+import { ArrowRight, Trophy, Shuffle } from "lucide-react";
 import { ICONS } from "./icons.js";
 
-export default function Home({ modules, totalLessons, progress, onOpen }) {
+export default function Home({ modules, totalLessons, progress, onOpen, onMixed }) {
   const doneCount = Object.values(progress.done).filter(Boolean).length;
   const overall = Math.round((doneCount / totalLessons) * 100);
 
@@ -26,6 +26,12 @@ export default function Home({ modules, totalLessons, progress, onOpen }) {
         <div className="n">{doneCount}/{totalLessons} lessons</div>
         <div className="barwrap"><div className="barfill" style={{ width: `${overall}%` }} /></div>
       </div>
+
+      <button className="mixcta" onClick={onMixed}>
+        <Shuffle size={16} />
+        Mixed interview drill — random questions from every module
+        <ArrowRight size={16} className="mixarrow" />
+      </button>
 
       <div className="grid">
         {modules.map((m, idx) => {

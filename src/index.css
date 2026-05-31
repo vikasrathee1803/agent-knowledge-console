@@ -65,6 +65,13 @@ body {
 .barwrap { height: 7px; border-radius: 99px; background: var(--surface2); overflow: hidden; border: 1px solid var(--line); }
 .barfill { height: 100%; background: linear-gradient(90deg, #b9791f, var(--amber), var(--amber2)); border-radius: 99px; transition: width .5s cubic-bezier(.22,1,.36,1); }
 .progrow { display: flex; align-items: center; gap: 10px; margin: 22px 0 8px; }
+.mixcta { width: 100%; cursor: pointer; display: flex; align-items: center; gap: 10px; margin: 14px 0 2px;
+  border: 1px solid var(--line2); background: linear-gradient(160deg, var(--surface), var(--bg2)); color: var(--text);
+  border-radius: 14px; padding: 15px 18px; font-family: var(--mono); font-size: 12.5px; letter-spacing: .02em; transition: all .25s; text-align: left; }
+.mixcta:hover { border-color: var(--amber); color: var(--amber2); transform: translateY(-2px); box-shadow: 0 14px 32px -22px rgba(233,169,60,.6); }
+.mixcta svg { color: var(--amber); flex-shrink: 0; }
+.mixcta .mixarrow { margin-left: auto; transition: transform .25s; }
+.mixcta:hover .mixarrow { transform: translateX(3px); }
 .progrow .barwrap { flex: 1; }
 .progrow .n { font-family: var(--mono); font-size: 11px; color: var(--faint); white-space: nowrap; }
 
@@ -251,6 +258,20 @@ pre code { font-family: var(--mono); font-size: 12.5px; line-height: 1.65; color
 
 /* interview drills */
 .iv-intro { color: var(--muted); font-size: 13.5px; line-height: 1.6; margin: 0 0 18px; max-width: 62ch; }
+.iv-filter { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; align-items: center; }
+.iv-fbtn { cursor: pointer; display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
+  color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 99px; padding: 7px 13px; transition: all .2s; }
+.iv-fbtn:hover { color: var(--text); border-color: var(--line2); }
+.iv-fbtn.on { background: linear-gradient(150deg, var(--amber), #b9791f); color: #1a1409; border-color: transparent; }
+.iv-fct { font-size: 9.5px; opacity: .7; }
+.iv-fbtn.shuf { margin-left: auto; color: var(--amber2); }
+.iv-fbtn.shuf:hover { border-color: var(--amber); }
+.iv-lvl { font-family: var(--mono); font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; margin-left: 9px; border: 1px solid; vertical-align: middle; }
+.lvl-fundamental { color: var(--green); border-color: rgba(165,207,123,.4); background: rgba(165,207,123,.08); }
+.lvl-intermediate { color: var(--blue); border-color: rgba(132,182,214,.4); background: rgba(132,182,214,.08); }
+.lvl-senior { color: var(--amber2); border-color: rgba(233,169,60,.45); background: rgba(233,169,60,.1); }
+.md-src { font-family: var(--mono); font-size: 11px; color: var(--faint); margin-bottom: 12px; letter-spacing: .04em; }
+.md-src b { color: var(--amber2); font-weight: 500; }
 .iv-card { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 18px 18px 16px; margin-bottom: 14px; }
 .iv-tag { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin-bottom: 10px; }
 .iv-q { font-family: var(--display); font-weight: 600; font-size: 18px; line-height: 1.32; letter-spacing: -.005em; margin-bottom: 16px; }

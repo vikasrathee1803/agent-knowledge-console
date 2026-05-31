@@ -8,6 +8,18 @@ import { Flow, Compare } from "./Diagrams.jsx";
 
 const KEY = ["A", "B", "C", "D", "E"];
 
+export const LEVEL_FILTERS = [
+  ["all", "All"],
+  ["fundamental", "Fundamental"],
+  ["intermediate", "Intermediate"],
+  ["senior", "Senior"],
+];
+
+function Level({ v }) {
+  if (!v) return null;
+  return <span className={"iv-lvl lvl-" + v}>{v}</span>;
+}
+
 function Illustration({ d }) {
   if (!d) return null;
   if (d.flow) return <Flow data={d.flow} />;
@@ -15,12 +27,12 @@ function Illustration({ d }) {
   return null;
 }
 
-function McqCard({ item, n }) {
+export function McqCard({ item, n }) {
   const [picked, setPicked] = useState(null);
   const done = picked !== null;
   return (
     <div className="iv-card">
-      <div className="iv-tag">Q{n} · recall</div>
+      <div className="iv-tag">Q{n} · recall<Level v={item.level} /></div>
       <div className="iv-q">{item.q}</div>
       <div className="iv-opts">
         {item.options.map((opt, idx) => {
@@ -46,11 +58,11 @@ function McqCard({ item, n }) {
   );
 }
 
-function OpenCard({ item, n }) {
+export function OpenCard({ item, n }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="iv-card">
-      <div className="iv-tag">Q{n} · spoken answer</div>
+      <div className="iv-tag">Q{n} · spoken answer<Level v={item.level} /></div>
       <div className="iv-q">{item.q}</div>
       {!open ? (
         <button className="iv-reveal" onClick={() => setOpen(true)}>
@@ -77,8 +89,11 @@ function OpenCard({ item, n }) {
 }
 
 export default function Interview({ items }) {
+  const [lvl, setLvl] = useState("all");
   if (!items || !items.length)
     return <div className="iv-empty">No interview questions for this module yet.</div>;
+  const shown = lvl === "all" ? items : items.filter((it) => it.level === lvl);
+  const count = (k) => items.filter((it) => it.level === k).length;
   let qn = 0;
   return (
     <div className="iv">
@@ -86,12 +101,20 @@ export default function Interview({ items }) {
         Mixed drills: multiple-choice for fast recall, plus open “spoken answer” questions with a
         model answer. Try to answer before revealing — the effort of recalling is what makes it stick.
       </p>
-      {items.map((item, i) => {
+      <div className="iv-filter">
+        {LEVEL_FILTERS.map(([k, label]) => (
+          <button key={k} className={"iv-fbtn" + (lvl === k ? " on" : "")} onClick={() => setLvl(k)}>
+            {label}
+            {k !== "all" && <span className="iv-fct">{count(k)}</span>}
+          </button>
+        ))}
+      </div>
+      {shown.map((item, i) => {
         qn += 1;
         return item.type === "mcq" ? (
-          <McqCard key={i} item={item} n={qn} />
+          <McqCard key={lvl + i} item={item} n={qn} />
         ) : (
-          <OpenCard key={i} item={item} n={qn} />
+          <OpenCard key={lvl + i} item={item} n={qn} />
         );
       })}
     </div>

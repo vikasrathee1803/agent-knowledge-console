@@ -4,11 +4,13 @@ import { MODULES, TOTAL_LESSONS } from "./data/curriculum.js";
 import { loadProgress, saveProgress, resetProgress } from "./lib/storage.js";
 import Home from "./components/Home.jsx";
 import ModuleView from "./components/ModuleView.jsx";
+import MixedDrill from "./components/MixedDrill.jsx";
 
 export default function App() {
   const [progress, setProgress] = useState({ done: {}, quiz: {}, cards: {} });
   const [loaded, setLoaded] = useState(false);
   const [activeId, setActiveId] = useState(null);
+  const [mixed, setMixed] = useState(false);
 
   useEffect(() => {
     setProgress(loadProgress());
@@ -61,12 +63,15 @@ export default function App() {
           </div>
         </div>
 
-        {!active ? (
+        {mixed ? (
+          <MixedDrill onBack={() => setMixed(false)} />
+        ) : !active ? (
           <Home
             modules={MODULES}
             totalLessons={TOTAL_LESSONS}
             progress={progress}
             onOpen={setActiveId}
+            onMixed={() => setMixed(true)}
           />
         ) : (
           <ModuleView
